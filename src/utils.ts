@@ -8,7 +8,7 @@ import { logger } from './logger.js';
 const geoClient = new GeoPlacesClient();
 
 /**
- * Get the geographical coordinates of a city.
+ * Look up a city by its name and return its full name and coordinates.
  *
  * This function uses Amazon Location Service to look up the coordinates
  * of a city by its name. It first performs an autocomplete search
@@ -16,14 +16,14 @@ const geoClient = new GeoPlacesClient();
  *
  * @example
  * ```ts
- * import { getPlaceCoordinates } from './utils.js';
+ * import { getPlaceInfo } from './utils.js';
  *
- * const { latitude, longitude } = await getPlaceCoordinates('Seattle');
+ * const { latitude, longitude } = await getPlaceInfo('Seattle');
  * ```
  *
  * @param city - The name of the city to get coordinates for
  */
-const getPlaceCoordinates = async (city: string) => {
+const getPlaceInfo = async (city: string) => {
   let placeId: string;
   try {
     const response = await geoClient.send(
@@ -58,7 +58,7 @@ const getPlaceCoordinates = async (city: string) => {
     if (response.Position) {
       const [longitude, latitude] = response.Position;
       logger.debug('Coordinates found', { latitude, longitude });
-      return { latitude, longitude };
+      return { latitude, longitude, fullName: response.Title };
     }
     throw new Error('No coordinates found');
   } catch (error) {
@@ -108,4 +108,4 @@ const getWeatherForCoordinates = async (coordinates: {
   }
 };
 
-export { getPlaceCoordinates, getWeatherForCoordinates };
+export { getPlaceInfo, getWeatherForCoordinates };

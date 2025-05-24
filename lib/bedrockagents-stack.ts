@@ -32,7 +32,7 @@ export class BedrockAgentsStack extends Stack {
       functionName: fnName,
       logGroup,
       runtime: Runtime.NODEJS_22_X,
-      entry: './src/index.ts',
+      entry: './src/weather.ts',
       handler: 'handler',
       bundling: {
         minify: true,
@@ -116,19 +116,6 @@ export class BedrockAgentsStack extends Stack {
                   },
                 },
               },
-              {
-                name: 'getWeatherForMultipleCities',
-
-                description: 'Get weather for multiple cities',
-                parameters: {
-                  cities: {
-                    type: 'array',
-                    description:
-                      'The names of the cities to get the weather for',
-                    required: true,
-                  },
-                },
-              },
             ],
           },
         },
@@ -136,12 +123,9 @@ export class BedrockAgentsStack extends Stack {
       agentResourceRoleArn: agentRole.roleArn,
       autoPrepare: true,
       description: 'A simple weather agent',
-      foundationModel:
-        // 'arn:aws:bedrock:us-west-2::foundation-model/amazon.nova-pro-v1:0',
-        `arn:aws:bedrock:us-west-2:${Stack.of(this).account}:inference-profile/us.amazon.nova-pro-v1:0`,
+      foundationModel: `arn:aws:bedrock:us-west-2:${Stack.of(this).account}:inference-profile/us.amazon.nova-pro-v1:0`,
       instruction:
-        // 'You are a weather forecast news anchor. You will be asked to provide a weather forecast for one or more cities. You will be provided with the current weather conditions. You will provide a weather forecast for each city as if you were a TV news anchor. You will provide the forecast in a conversational tone, as if you were speaking to a viewer on a TV news program.',
-        'You are a middle ages weather diviner. You will be asked to provide a weather forecast for one or more cities. You will be provided with the current weather conditions. You will provide a weather forecast for each city as if you were a person in the middle ages using English from that time and as if you were a diviner.',
+        'You are a weather forecast news anchor. You will be asked to provide a weather forecast for one or more cities. You will provide a weather forecast for each city as if you were a TV news anchor. While doing so, include the region or country of the city received from the tool. You will provide the forecast in a conversational tone, as if you were speaking to a viewer on a TV news program.',
     });
     fn.addPermission('BedrockAgentInvokePermission', {
       principal: new ServicePrincipal('bedrock.amazonaws.com'),
