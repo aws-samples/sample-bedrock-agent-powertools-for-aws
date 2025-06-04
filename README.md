@@ -48,4 +48,4 @@ npm run cdk destroy
 
 ## License
 
-MIT
+MIT-0

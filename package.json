@@ -5,6 +5,7 @@
     "infra": "bin/bedrockagents.js"
   },
   "type": "module",
+  "license": "MIT-0",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
