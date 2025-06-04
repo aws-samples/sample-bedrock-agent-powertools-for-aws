@@ -6,4 +6,4 @@ import { AwsSolutionsChecks } from 'cdk-nag';
 
 const app = new App();
 new BedrockAgentsStack(app, 'BedrockAgentsStack', {});
-// Aspects.of(app).add(new AwsSolutionsChecks());
+Aspects.of(app).add(new AwsSolutionsChecks());

@@ -25,7 +25,8 @@ export class BedrockAgentsStack extends Stack {
 
     const region = this.node.tryGetContext('region') || 'us-west-2';
     const modelId =
-      this.node.tryGetContext('modelId') || 'us.amazon.nova-pro-v1:0';
+      this.node.tryGetContext('modelId') || 'amazon.nova-pro-v1:0';
+    const geoChars = region.split('-')[0] as string;
 
     const fnName = 'BedrockAgentsFn';
     const logGroup = new LogGroup(this, 'MyLogGroup', {
@@ -69,56 +70,13 @@ export class BedrockAgentsStack extends Stack {
         bedrock: new PolicyDocument({
           statements: [
             new PolicyStatement({
-              actions: [
-                /* 'bedrock:InvokeModel',
-                'bedrock:InvokeModelWithResponseStream',
-                'bedrock:CreateAgent',
-                'bedrock:UpdateAgent',
-                'bedrock:DeleteAgent',
-                'bedrock:PrepareAgent', */
-                'bedrock:*',
-                /* 'bedrock:ListFoundationModels',
-                'bedrock:GetFoundationModel',
-                'bedrock:TagResource',
-                'bedrock:UntagResource',
-                'bedrock:ListTagsForResource',
-                'bedrock:CreateAgent',
-                'bedrock:UpdateAgent',
-                'bedrock:GetAgent',
-                'bedrock:ListAgents',
-                'bedrock:DeleteAgent',
-                'bedrock:CreateAgentActionGroup',
-                'bedrock:UpdateAgentActionGroup',
-                'bedrock:GetAgentActionGroup',
-                'bedrock:ListAgentActionGroups',
-                'bedrock:DeleteAgentActionGroup',
-                'bedrock:GetAgentVersion',
-                'bedrock:ListAgentVersions',
-                'bedrock:DeleteAgentVersion',
-                'bedrock:CreateAgentAlias',
-                'bedrock:UpdateAgentAlias',
-                'bedrock:GetAgentAlias',
-                'bedrock:ListAgentAliases',
-                'bedrock:DeleteAgentAlias',
-                'bedrock:AssociateAgentKnowledgeBase',
-                'bedrock:DisassociateAgentKnowledgeBase',
-                'bedrock:ListAgentKnowledgeBases',
-                'bedrock:GetKnowledgeBase',
-                'bedrock:ListKnowledgeBases',
-                'bedrock:PrepareAgent',
-                'bedrock:InvokeAgent',
-                'bedrock:AssociateAgentCollaborator',
-                'bedrock:DisassociateAgentCollaborator',
-                'bedrock:GetAgentCollaborator',
-                'bedrock:ListAgentCollaborators',
-                'bedrock:UpdateAgentCollaborator', */
-              ],
+              actions: ['bedrock:*'],
               resources: [
                 Arn.format(
                   {
                     service: 'bedrock',
                     resource: `foundation-model/${modelId}`,
-                    region: 'us-*',
+                    region: `${geoChars}-*`,
                     account: '',
                   },
                   Stack.of(this)
@@ -127,7 +85,7 @@ export class BedrockAgentsStack extends Stack {
                   {
                     service: 'bedrock',
                     resource: 'inference-profile/*',
-                    region: 'us-*',
+                    region: `${geoChars}-*`,
                     account: '*',
                   },
                   Stack.of(this)
@@ -138,6 +96,13 @@ export class BedrockAgentsStack extends Stack {
         }),
       },
     });
+    NagSuppressions.addResourceSuppressions(agentRole, [
+      {
+        id: 'AwsSolutions-IAM5',
+        reason:
+          'We are intentionally using a wildcard resource and action to allow customers to fine-tune permissions as needed and as called out in the README.',
+      },
+    ]);
 
     const agent = new CfnAgent(this, 'MyCfnAgent', {
       agentName: 'weatherAgent',
@@ -168,7 +133,7 @@ export class BedrockAgentsStack extends Stack {
       agentResourceRoleArn: agentRole.roleArn,
       autoPrepare: true,
       description: 'A simple weather agent',
-      foundationModel: `arn:aws:bedrock:${region}:${Stack.of(this).account}:inference-profile/${modelId}`,
+      foundationModel: `arn:aws:bedrock:${region}:${Stack.of(this).account}:inference-profile/${geoChars}.${modelId}`,
       instruction:
         'You are a weather forecast news anchor. You will be asked to provide a weather forecast for one or more cities. You will provide a weather forecast for each city as if you were a TV news anchor. While doing so, include the region or country of the city received from the tool. You will provide the forecast in a conversational tone, as if you were speaking to a viewer on a TV news program.',
     });
