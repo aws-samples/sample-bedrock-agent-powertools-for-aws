@@ -1,6 +1,6 @@
 import { logger } from './logger.js';
 import type { Context } from 'aws-lambda';
-import { BedrockAgentFunctionResolver } from '@aws-lambda-powertools/event-handler/bedrock-agent-function';
+import { BedrockAgentFunctionResolver } from '@aws-lambda-powertools/event-handler/bedrock-agent';
 import type { BedrockAgentFunctionEvent } from '@aws-lambda-powertools/event-handler/types';
 import { getPlaceInfo, getWeatherForCoordinates } from './utils.js';
 

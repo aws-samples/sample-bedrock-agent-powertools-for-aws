@@ -17,10 +17,15 @@ import {
   Role,
   ServicePrincipal,
 } from 'aws-cdk-lib/aws-iam';
+import { NagSuppressions } from 'cdk-nag';
 
 export class BedrockAgentsStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
+
+    const region = this.node.tryGetContext('region') || 'us-west-2';
+    const modelId =
+      this.node.tryGetContext('modelId') || 'us.amazon.nova-pro-v1:0';
 
     const fnName = 'BedrockAgentsFn';
     const logGroup = new LogGroup(this, 'MyLogGroup', {
@@ -44,10 +49,18 @@ export class BedrockAgentsStack extends Stack {
     fn.addToRolePolicy(
       new PolicyStatement({
         actions: ['geo-places:Autocomplete', 'geo-places:GetPlace'],
-        resources: ['*'],
+        resources: [`arn:aws:geo-places:${region}::provider/default`],
         effect: Effect.ALLOW,
       })
     );
+    // biome-ignore lint/style/noNonNullAssertion: we know the IAM role exists
+    NagSuppressions.addResourceSuppressions(fn.role!, [
+      {
+        id: 'AwsSolutions-IAM4',
+        reason:
+          'We are intentionally using the AWS Lambda managed policy for this sample',
+      },
+    ]);
 
     const agentRole = new Role(this, 'MyAgentRole', {
       assumedBy: new ServicePrincipal('bedrock.amazonaws.com'),
@@ -64,12 +77,47 @@ export class BedrockAgentsStack extends Stack {
                 'bedrock:DeleteAgent',
                 'bedrock:PrepareAgent', */
                 'bedrock:*',
+                /* 'bedrock:ListFoundationModels',
+                'bedrock:GetFoundationModel',
+                'bedrock:TagResource',
+                'bedrock:UntagResource',
+                'bedrock:ListTagsForResource',
+                'bedrock:CreateAgent',
+                'bedrock:UpdateAgent',
+                'bedrock:GetAgent',
+                'bedrock:ListAgents',
+                'bedrock:DeleteAgent',
+                'bedrock:CreateAgentActionGroup',
+                'bedrock:UpdateAgentActionGroup',
+                'bedrock:GetAgentActionGroup',
+                'bedrock:ListAgentActionGroups',
+                'bedrock:DeleteAgentActionGroup',
+                'bedrock:GetAgentVersion',
+                'bedrock:ListAgentVersions',
+                'bedrock:DeleteAgentVersion',
+                'bedrock:CreateAgentAlias',
+                'bedrock:UpdateAgentAlias',
+                'bedrock:GetAgentAlias',
+                'bedrock:ListAgentAliases',
+                'bedrock:DeleteAgentAlias',
+                'bedrock:AssociateAgentKnowledgeBase',
+                'bedrock:DisassociateAgentKnowledgeBase',
+                'bedrock:ListAgentKnowledgeBases',
+                'bedrock:GetKnowledgeBase',
+                'bedrock:ListKnowledgeBases',
+                'bedrock:PrepareAgent',
+                'bedrock:InvokeAgent',
+                'bedrock:AssociateAgentCollaborator',
+                'bedrock:DisassociateAgentCollaborator',
+                'bedrock:GetAgentCollaborator',
+                'bedrock:ListAgentCollaborators',
+                'bedrock:UpdateAgentCollaborator', */
               ],
               resources: [
                 Arn.format(
                   {
                     service: 'bedrock',
-                    resource: 'foundation-model/*',
+                    resource: `foundation-model/${modelId}`,
                     region: 'us-*',
                     account: '',
                   },
@@ -93,8 +141,6 @@ export class BedrockAgentsStack extends Stack {
 
     const agent = new CfnAgent(this, 'MyCfnAgent', {
       agentName: 'weatherAgent',
-
-      // the properties below are optional
       actionGroups: [
         {
           actionGroupName: 'weatherActionGroup',
@@ -106,7 +152,6 @@ export class BedrockAgentsStack extends Stack {
             functions: [
               {
                 name: 'getWeatherForCity',
-
                 description: 'Get weather for a specific city',
                 parameters: {
                   city: {
@@ -123,7 +168,7 @@ export class BedrockAgentsStack extends Stack {
       agentResourceRoleArn: agentRole.roleArn,
       autoPrepare: true,
       description: 'A simple weather agent',
-      foundationModel: `arn:aws:bedrock:us-west-2:${Stack.of(this).account}:inference-profile/us.amazon.nova-pro-v1:0`,
+      foundationModel: `arn:aws:bedrock:${region}:${Stack.of(this).account}:inference-profile/${modelId}`,
       instruction:
         'You are a weather forecast news anchor. You will be asked to provide a weather forecast for one or more cities. You will provide a weather forecast for each city as if you were a TV news anchor. While doing so, include the region or country of the city received from the tool. You will provide the forecast in a conversational tone, as if you were speaking to a viewer on a TV news program.',
     });
