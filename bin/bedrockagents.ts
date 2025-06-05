@@ -5,5 +5,9 @@ import { BedrockAgentsStack } from '../lib/bedrockagents-stack.js';
 import { AwsSolutionsChecks } from 'cdk-nag';
 
 const app = new App();
-new BedrockAgentsStack(app, 'BedrockAgentsStack', {});
+new BedrockAgentsStack(app, 'BedrockAgentsStack', {
+  tags: {
+    POWERTOOLS_SAMPLE: 'BedrockAgentsFunction',
+  },
+});
 Aspects.of(app).add(new AwsSolutionsChecks());
