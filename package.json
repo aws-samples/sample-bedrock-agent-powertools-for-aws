@@ -13,7 +13,7 @@
     "update:deps": "npx npm-check-updates -u"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "^2.2.4",
     "@types/aws-lambda": "^8.10.152",
     "@types/node": "22.15.29",
     "aws-cdk": "2.1029.1",
