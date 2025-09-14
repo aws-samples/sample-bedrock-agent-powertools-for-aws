@@ -24,7 +24,7 @@
   "dependencies": {
     "@aws-lambda-powertools/commons": "^2.21.0",
     "@aws-lambda-powertools/event-handler": "^2.21.0",
-    "@aws-lambda-powertools/logger": "^2.21.0",
+    "@aws-lambda-powertools/logger": "^2.26.0",
     "@aws-sdk/client-geo-places": "^3.879.0",
     "aws-cdk-lib": "2.200.1",
     "constructs": "^10.4.2",
