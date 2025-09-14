@@ -16,7 +16,7 @@
     "@biomejs/biome": "^1.9.4",
     "@types/aws-lambda": "^8.10.152",
     "@types/node": "22.15.29",
-    "aws-cdk": "2.1018.0",
+    "aws-cdk": "2.1029.1",
     "cdk-nag": "^2.36.11",
     "esbuild": "^0.25.5",
     "typescript": "~5.8.3"
