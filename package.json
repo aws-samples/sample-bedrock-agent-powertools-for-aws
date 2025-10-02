@@ -13,20 +13,20 @@
     "update:deps": "npx npm-check-updates -u"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
-    "@types/aws-lambda": "^8.10.152",
-    "@types/node": "24.6.1",
-    "aws-cdk": "2.1029.1",
-    "cdk-nag": "^2.36.11",
-    "esbuild": "^0.25.5",
-    "typescript": "~5.8.3"
+    "@biomejs/biome": "^2.2.5",
+    "@types/aws-lambda": "^8.10.153",
+    "@types/node": "24.6.2",
+    "aws-cdk": "2.1029.4",
+    "cdk-nag": "^2.37.41",
+    "esbuild": "^0.25.10",
+    "typescript": "~5.9.3"
   },
   "dependencies": {
-    "@aws-lambda-powertools/commons": "^2.21.0",
+    "@aws-lambda-powertools/commons": "^2.27.0",
     "@aws-lambda-powertools/event-handler": "^2.27.0",
-    "@aws-lambda-powertools/logger": "^2.26.0",
-    "@aws-sdk/client-geo-places": "^3.879.0",
-    "aws-cdk-lib": "2.200.1",
+    "@aws-lambda-powertools/logger": "^2.27.0",
+    "@aws-sdk/client-geo-places": "^3.901.0",
+    "aws-cdk-lib": "2.219.0",
     "constructs": "^10.4.2",
     "source-map-support": "^0.5.21"
   }
