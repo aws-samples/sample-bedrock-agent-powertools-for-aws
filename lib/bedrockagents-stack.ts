@@ -6,7 +6,7 @@ import {
   Arn,
 } from 'aws-cdk-lib';
 import type { Construct } from 'constructs';
-import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { CfnFunction, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction, OutputFormat } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { CfnAgent } from 'aws-cdk-lib/aws-bedrock';
@@ -24,8 +24,10 @@ export class BedrockAgentsStack extends Stack {
     super(scope, id, props);
 
     const region = this.node.tryGetContext('region') || 'us-west-2';
+    console.log(`Using region: ${region}`);
     const modelId =
       this.node.tryGetContext('modelId') || 'amazon.nova-pro-v1:0';
+    console.log(`Using modelId: ${modelId}`);
     const geoChars = region.split('-')[0] as string;
 
     const fnName = 'BedrockAgentsFn';
@@ -75,7 +77,7 @@ export class BedrockAgentsStack extends Stack {
                 Arn.format(
                   {
                     service: 'bedrock',
-                    resource: `foundation-model/${modelId}`,
+                    resource: `foundation-model/${geoChars}.${modelId}`,
                     region: `${geoChars}-*`,
                     account: '',
                   },

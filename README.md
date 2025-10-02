@@ -18,7 +18,7 @@ After cloning this repository, you can deploy the sample using the AWS CDK.
 
 ```bash
 npm ci
-npm run cdk deploy -- --context modelId=amazon.nova-pro-v1:0 --region us-west-2
+npm run cdk deploy -- --context modelId=amazon.nova-pro-v1:0 --context region=us-west-2
 ```
 
 The sample will create a Bedrock Agent with a single AWS Lambda function that uses the Powertools for AWS Lambda [Event Handler for Bedrock Agent Functions](https://s12d.com/bedrock-agents-sample-github-link). The function is written in TypeScript, but you can adapt it to your preferred language using the same Powertools for AWS feature available in [Python](https://docs.powertools.aws.dev/lambda/python/latest/core/event_handler/bedrock_agents/) and [.NET](https://docs.powertools.aws.dev/lambda/dotnet/core/event_handler/bedrock_agent_function/).
