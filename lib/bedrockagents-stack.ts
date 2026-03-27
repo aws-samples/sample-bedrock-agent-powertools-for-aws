@@ -6,7 +6,7 @@ import {
   Arn,
 } from 'aws-cdk-lib';
 import type { Construct } from 'constructs';
-import { CfnFunction, Runtime } from 'aws-cdk-lib/aws-lambda';
+import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction, OutputFormat } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { CfnAgent } from 'aws-cdk-lib/aws-bedrock';
@@ -39,7 +39,7 @@ export class BedrockAgentsStack extends Stack {
     const fn = new NodejsFunction(this, 'MyFunction', {
       functionName: fnName,
       logGroup,
-      runtime: Runtime.NODEJS_22_X,
+      runtime: Runtime.NODEJS_24_X,
       entry: './src/weather.ts',
       handler: 'handler',
       bundling: {

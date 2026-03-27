@@ -1,5 +1,5 @@
 {
-  "app": "npx tsx bin/bedrockagents.ts",
+  "app": "node bin/bedrockagents.ts",
   "watch": {
     "include": [
       "**"
